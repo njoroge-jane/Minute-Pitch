@@ -11,11 +11,17 @@ def index():
     title = 'Welcome'
     return render_template('index.html',title = title)
 
-@main.route('/login', methods = ['GET','POST'])
-@login_required
-def login():
-    # form = ReviewForm()
-    # movie = get_movie(id)
+# @main.route('/login', methods = ['GET','POST'])
+# @login_required
+# def login():
+#     # form = ReviewForm()
+#     # movie = get_movie(id)
 
-    title = 'Welcome'
-    return render_template('login.html',title = title)    
+#     title = 'Welcome'
+#     return render_template('auth/login.html',title = title)   
+
+@main.route('/home') 
+def home():
+
+
+    return render_template('index.html')    
