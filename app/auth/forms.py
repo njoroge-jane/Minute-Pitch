@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField,TextAreaField
 from wtforms.validators import InputRequired,Email,EqualTo
 from ..models import User
+from wtforms import ValidationError
 
 
 class ReviewForm(FlaskForm):
