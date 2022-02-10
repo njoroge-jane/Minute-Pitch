@@ -1,6 +1,6 @@
-from flask_login import login_required
-from flask import render_template
+from flask import render_template,request,redirect,url_for,abort
 from . import main
+from ..models import User
 
 
 @main.route('/', methods = ['GET','POST'])
@@ -11,17 +11,12 @@ def index():
     title = 'Welcome'
     return render_template('index.html',title = title)
 
-# @main.route('/login', methods = ['GET','POST'])
-# @login_required
-# def login():
-#     # form = ReviewForm()
-#     # movie = get_movie(id)
+@main.route('/user/<uname>')
+def profile(uname):
+    user = User.query.filter_by(username = uname).first()
 
-#     title = 'Welcome'
-#     return render_template('auth/login.html',title = title)   
+    if user is None:
+        abort(404)
 
-@main.route('/home') 
-def home():
+    return render_template("profile/profile.html", user = user)
 
-
-    return render_template('index.html')    
