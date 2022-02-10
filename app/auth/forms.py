@@ -24,4 +24,8 @@ class LoginForm(FlaskForm):
     email = StringField('Your Email Address',validators=[InputRequired(),Email()])
     password = PasswordField('Password',validators =[InputRequired()])
     remember = BooleanField('Remember me')
-    submit = SubmitField('Sign In')       
+    submit = SubmitField('Sign In') 
+
+class UpdateProfile(FlaskForm):
+    bio = TextAreaField('Tell us about you.',validators = [InputRequired()])
+    submit = SubmitField('Submit')          
