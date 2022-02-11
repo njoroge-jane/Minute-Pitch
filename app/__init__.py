@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask_uploads import UploadSet,configure_uploads,IMAGES
 from flask_mail import Mail
+import os
 
 photos = UploadSet('photos',IMAGES)
 mail = Mail()
@@ -16,6 +17,7 @@ login_manager.login_view = 'auth.login'
 db = SQLAlchemy()
 def create_app(config_name):
     app = Flask(__name__)
+    app.config['UPLOADED_PHOTOS_DEST'] = os.getcwd()
 
     # configure UploadSet
     configure_uploads(app,photos)
