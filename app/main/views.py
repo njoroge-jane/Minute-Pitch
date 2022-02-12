@@ -1,9 +1,12 @@
+from unicodedata import category
 from flask import render_template,request,redirect,url_for,abort
 from . import main
 from ..models import User
 from app.auth.forms import UpdateProfile
 from .. import db,photos
 from flask_login import login_required
+from ..models import Pitches
+from .forms import PitchForm
 
 
 @main.route('/', methods = ['GET','POST'])
@@ -52,3 +55,19 @@ def update_pic(uname):
         user.profile_pic_path = path
         db.session.commit()
     return redirect(url_for('main.profile',uname=uname))
+
+
+@main.route('/pitch', methods = ['GET','POST'])
+def new_pitch():
+    form = PitchForm()
+
+    if form.validate_on_submit():
+        title = form.title.data
+        category = form.category.data
+        pitch = form.pitch.data
+        new_pitch = Pitches(title,category,pitch)
+        new_pitch.save_pitch()
+        return redirect(url_for('index'))
+
+    title = 'Add Pitch'
+    return render_template('new_pitch.html',title = title, pitch_form=form)    

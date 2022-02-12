@@ -35,3 +35,33 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'User {self.username}'
+
+class Pitches:
+
+    all_pitches = []
+
+    def __init__(self,title,category,pitch):
+        self.title = title
+        self.category = category
+        self.pitch = pitch
+
+
+    def save_pitch(self):
+        Pitches.all_pitches.append(self)
+
+
+    @classmethod
+    def clear_pitches(cls):
+        Pitches.all_reviews.clear()
+
+    @classmethod
+    def get_pitch(cls,category):
+
+        response = []
+
+        for pitch in cls.all_pitches:
+            if pitch.category == category:
+                response.append()
+
+        return response
+    
