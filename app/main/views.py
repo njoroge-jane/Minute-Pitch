@@ -4,7 +4,7 @@ from . import main
 from ..models import User
 from app.auth.forms import UpdateProfile
 from .. import db,photos
-from flask_login import login_required
+from flask_login import login_required,current_user
 from ..models import Pitches
 from .forms import PitchForm
 
@@ -58,14 +58,15 @@ def update_pic(uname):
 
 
 @main.route('/pitch', methods = ['GET','POST'])
+@login_required
 def new_pitch():
     form = PitchForm()
 
     if form.validate_on_submit():
-        title = form.title.data
+        pitch_title = form.title.data
         category = form.category.data
         pitch = form.pitch.data
-        new_pitch = Pitches(title,category,pitch)
+        new_pitch = Pitches(pitch_title=pitch_title,category=category,pitch=pitch,user=current_user)
         new_pitch.save_pitch()
         return redirect(url_for('index'))
 
