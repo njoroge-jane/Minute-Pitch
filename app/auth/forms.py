@@ -16,8 +16,8 @@ class ReviewForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     email = StringField('Your Email Address',validators=[InputRequired(),Email()])
     username = StringField('Enter your username',validators = [InputRequired()])
-    password = PasswordField('Password',validators = [InputRequired(), EqualTo('password_confirm',message = 'Passwords must match')])
-    confirm = PasswordField('Confirm Passwords',validators = [InputRequired()])
+    password = PasswordField('Password',validators = [InputRequired()])
+    confirm_password = PasswordField('Confirm Passwords',validators = [InputRequired(), EqualTo('password',message = 'Passwords dont match')])
     submit = SubmitField('Sign Up') 
 
 class LoginForm(FlaskForm):

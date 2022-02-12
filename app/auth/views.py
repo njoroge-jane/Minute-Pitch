@@ -1,3 +1,4 @@
+from click import confirm
 from flask import render_template,redirect,url_for,flash
 from . import auth
 from flask_login import login_user,logout_user,login_required
@@ -10,10 +11,10 @@ from ..email import mail_message
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(email = form.email.data, username = form.username.data,password = form.password.data)
+        user = User(email = form.email.data, username = form.username.data,password = form.password.data,confirm_password=form.confirm_password.data)
         db.session.add(user)
         db.session.commit()
-        mail_message("Welcome to watchlist","email/welcome_user",user.email,user=user)
+        mail_message("Welcome to minute-pitches","email/welcome_user",user.email,user=user)
         return redirect(url_for('auth.login'))
     title = "New Account"
     return render_template('auth/register.html',registration_form = form,title=title)
@@ -30,6 +31,7 @@ def login():
         flash('Invalid username or Password')
 
     title = "minute-pitch login"
+    
     return render_template('auth/login.html',login_form = login_form,title=title)
 
 
