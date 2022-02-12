@@ -1,35 +1,35 @@
 from unicodedata import category
-from flask import render_template,request,redirect,url_for,abort
+from flask import render_template, request, redirect, url_for, abort
 from . import main
 from ..models import User
 from app.auth.forms import UpdateProfile
-from .. import db,photos
-from flask_login import login_required,current_user
+from .. import db, photos
+from flask_login import login_required, current_user
 from ..models import Pitches
 from .forms import PitchForm
 
 
-@main.route('/', methods = ['GET','POST'])
+@main.route('/', methods=['GET', 'POST'])
 def index():
-    # form = ReviewForm()
-    # movie = get_movie(id)
 
-    title = 'Welcome'
-    return render_template('index.html',title = title)
+    title = 'Home Page'
+    return render_template('index.html', title=title)
+
 
 @main.route('/user/<uname>')
 def profile(uname):
-    user = User.query.filter_by(username = uname).first()
+    user = User.query.filter_by(username=uname).first()
 
     if user is None:
         abort(404)
 
-    return render_template("profile/profile.html", user = user)
+    return render_template("profile/profile.html", user=user)
 
-@main.route('/user/<uname>/update',methods = ['GET','POST'])
+
+@main.route('/user/<uname>/update', methods=['GET', 'POST'])
 @login_required
 def update_profile(uname):
-    user = User.query.filter_by(username = uname).first()
+    user = User.query.filter_by(username=uname).first()
     if user is None:
         abort(404)
 
@@ -41,23 +41,24 @@ def update_profile(uname):
         db.session.add(user)
         db.session.commit()
 
-        return redirect(url_for('.profile',uname=user.username))
+        return redirect(url_for('.profile', uname=user.username))
 
-    return render_template('profile/update.html',form =form)
+    return render_template('profile/update.html', form=form)
 
-@main.route('/user/<uname>/update/pic',methods= ['POST'])
+
+@main.route('/user/<uname>/update/pic', methods=['POST'])
 @login_required
 def update_pic(uname):
-    user = User.query.filter_by(username = uname).first()
+    user = User.query.filter_by(username=uname).first()
     if 'photo' in request.files:
         filename = photos.save(request.files['photo'])
         path = f'photos/{filename}'
         user.profile_pic_path = path
         db.session.commit()
-    return redirect(url_for('main.profile',uname=uname))
+    return redirect(url_for('main.profile', uname=uname))
 
 
-@main.route('/pitch', methods = ['GET','POST'])
+@main.route('/pitch', methods=['GET', 'POST'])
 @login_required
 def new_pitch():
     form = PitchForm()
@@ -66,9 +67,10 @@ def new_pitch():
         pitch_title = form.title.data
         category = form.category.data
         pitch = form.pitch.data
-        new_pitch = Pitches(pitch_title=pitch_title,category=category,pitch=pitch,user=current_user)
+        new_pitch = Pitches(pitch_title=pitch_title,
+                            category=category, pitch=pitch, user=current_user)
         new_pitch.save_pitch()
         return redirect(url_for('index'))
 
     title = 'Add Pitch'
-    return render_template('new_pitch.html',title = title, pitch_form=form)    
+    return render_template('new_pitch.html', title=title, pitch_form=form)
