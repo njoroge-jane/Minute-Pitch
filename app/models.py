@@ -6,8 +6,8 @@ from datetime import datetime
 
 
 @login_manager.user_loader
-def load_user(user_username):
-    return User.query.get(str(user_username))
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 class User(UserMixin, db.Model):
@@ -29,14 +29,15 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer,primary_key = True)
     username = db.Column(db.String(255),index = True)
     email = db.Column(db.String(255),unique = True,index = True)
-    password = db.Column(db.String(255))
-    confirm_password = db.Column(db.String(255))
-
+    bio = db.Column(db.String(255))
+    profile_pic_path = db.Column(db.String())
+    # role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
+    pitches = db.relationship('Pitches',backref = 'user',lazy = "dynamic")
 
 
     def __repr__(self):
         return f'User {self.username}'
- 
+
 class Pitches(db.Model):
 
     __tablename__ = 'pitches'
