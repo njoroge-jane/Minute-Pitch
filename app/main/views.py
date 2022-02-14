@@ -11,19 +11,20 @@ from .forms import PitchForm
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-
+    pitches = Pitches.query.all()
     title = 'Home Page'
-    return render_template('index.html', title=title)
+    return render_template('index.html', title=title,pitches=pitches)
 
 
 @main.route('/user/<uname>')
 def profile(uname):
     user = User.query.filter_by(username=uname).first()
+    pitches = Pitches.get_pitch(user.id)
 
     if user is None:
         abort(404)
 
-    return render_template("profile/profile.html", user=user)
+    return render_template("profile/profile.html", user=user,pitches=pitches)
 
 
 @main.route('/user/<uname>/update', methods=['GET', 'POST'])
@@ -62,15 +63,16 @@ def update_pic(uname):
 @login_required
 def new_pitch():
     form = PitchForm()
+    user = User.query.first()
 
     if form.validate_on_submit():
         pitch_title = form.title.data
         category = form.category.data
         pitch = form.pitch.data
-        new_pitch = Pitches(pitch_title=pitch_title,
+        new_pitch = Pitches(title=pitch_title,
                             category=category, pitch=pitch, user=current_user)
         new_pitch.save_pitch()
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index', uname=user.username))
 
     title = 'Add Pitch'
     return render_template('new_pitch.html', title=title, pitch_form=form)

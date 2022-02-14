@@ -22,7 +22,7 @@
     {% if current_user.is_authenticated %}
 
     <a href="{{url_for('main.profile',uname=current_user.username)}}"
-      >{{uname}}</a
+      >{{current_user.username}}</a
     >
     <button
       class="border rounded-pill btn position-absolute end-0 ms-5"
