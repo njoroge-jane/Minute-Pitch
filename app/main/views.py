@@ -1,5 +1,5 @@
 from unicodedata import category
-from flask import render_template, request, redirect, url_for, abort
+from flask import render_template, request, redirect, url_for, abort,jsonify
 from . import main
 from ..models import User
 from app.auth.forms import UpdateProfile
@@ -7,13 +7,23 @@ from .. import db, photos
 from flask_login import login_required, current_user
 from ..models import Pitches,Comments
 from .forms import PitchForm,CommentsForm
+from multiprocessing import Value
 
+counter = Value('i', 0)
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
     pitches = Pitches.query.all()
     title = 'Home Page'
-    return render_template('index.html', title=title,pitches=pitches)
+    with counter.get_lock():
+        counter.value += 1
+        # save the value ASAP rather than passing to jsonify
+        # to keep lock time short
+        unique_count = counter.value
+        counts= jsonify(count=unique_count)
+    
+    
+    return render_template('index.html', title=title,pitches=pitches,count=counts)
 
 
 @main.route('/user/<uname>')
@@ -72,12 +82,12 @@ def new_pitch():
         new_pitch = Pitches(title=pitch_title,
                             category=category, pitch=pitch, user=current_user)
         new_pitch.save_pitch()
-        return redirect(url_for('main.index', uname=user.username))
+        return redirect(url_for('.profile', uname=user.username))
 
     title = 'Add Pitch'
     return render_template('new_pitch.html', title=title, pitch_form=form)
 
-@main.route('/user/comment', methods =["GET", "POST"])
+@main.route('/user/comment/<int:id>', methods =["GET", "POST"])
 @login_required
 def comment(id):
     form = CommentsForm()
@@ -86,7 +96,7 @@ def comment(id):
 
     if form.validate_on_submit():
         comment_submitted = form.comment.data
-        new_comment = Comments(comment= comment_submitted, commenter = current_user, comments = pitch )
+        new_comment = Comments(comment= comment_submitted, comment_user = current_user, comment_pitch = pitch )
         new_comment.save_comment()
 
     return render_template('comments.html', comment_form = form, comments = comments, pitch = pitch)  

@@ -21,7 +21,7 @@ class User(UserMixin, db.Model):
     profile_pic_path = db.Column(db.String())
     # role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
     pitches = db.relationship('Pitches', backref='user', lazy="dynamic")
-    comments_id = db.relationship('Comments', backref = 'commenter', lazy ='dynamic')
+    
 
 
     @property
@@ -49,7 +49,8 @@ class Pitches(db.Model):
     pitch = db.Column(db.String)
     posted = db.Column(db.DateTime, default=datetime.utcnow())
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
- 
+    comments_id = db.relationship('Comments', backref = 'commenter', lazy ='dynamic')
+    votes = db.relationship('Votes', backref='voter', lazy="dynamic")
 
     def save_pitch(self):
         db.session.add(self)
@@ -85,3 +86,13 @@ class Comments(db.Model):
 #     category = db.Column(db.String(255))
     
 #     pitch_id = db.relationship('Pitches', backref = 'categories', lazy = 'dynamic')
+
+
+class Votes(db.Model):
+
+    __tablename__ = 'votes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    votes = db.Column(db.Integer)
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitches.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
