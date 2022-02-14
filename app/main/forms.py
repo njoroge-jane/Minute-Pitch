@@ -9,3 +9,7 @@ class PitchForm(FlaskForm):
     category = SelectField('Which category?',choices=[('Pickup'), ('Products'),('Business')],validators=[InputRequired()])
     pitch = TextAreaField('Write your pitch', validators=[InputRequired()])
     submit = SubmitField('Post')
+
+class CommentsForm(FlaskForm):
+    comment = TextAreaField('Write your comment')
+    submit = SubmitField('Submit')    

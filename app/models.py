@@ -21,6 +21,8 @@ class User(UserMixin, db.Model):
     profile_pic_path = db.Column(db.String())
     # role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
     pitches = db.relationship('Pitches', backref='user', lazy="dynamic")
+    comments_id = db.relationship('Comments', backref = 'commenter', lazy ='dynamic')
+
 
     @property
     def password(self):
@@ -47,12 +49,39 @@ class Pitches(db.Model):
     pitch = db.Column(db.String)
     posted = db.Column(db.DateTime, default=datetime.utcnow())
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+ 
 
     def save_pitch(self):
         db.session.add(self)
         db.session.commit()
 
     @classmethod
-    def get_pitches(cls, category):
+    def get_pitches(cls, id):
         pitches = Pitches.query.filter_by(user_id=id).all()
         return pitches
+
+class Comments(db.Model):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer, primary_key = True)
+    comment = db.Column(db.String(255))
+    date_posted = db.Column(db.DateTime,default=datetime.utcnow())
+    pitch_id = db.Column(db.Integer, db.ForeignKey('pitches.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def save_comment(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_comments(cls, id) :
+        comments = Comments.query.filter_by(pitch_id = id).all()
+        return comments 
+
+# class Category(db.Model) :
+#     __tablename__ = 'category'
+
+#     id = db.Column(db.Integer, primary_key = True)
+#     category = db.Column(db.String(255))
+    
+#     pitch_id = db.relationship('Pitches', backref = 'categories', lazy = 'dynamic')

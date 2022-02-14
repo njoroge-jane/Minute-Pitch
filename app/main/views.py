@@ -5,8 +5,8 @@ from ..models import User
 from app.auth.forms import UpdateProfile
 from .. import db, photos
 from flask_login import login_required, current_user
-from ..models import Pitches
-from .forms import PitchForm
+from ..models import Pitches,Comments
+from .forms import PitchForm,CommentsForm
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -76,3 +76,23 @@ def new_pitch():
 
     title = 'Add Pitch'
     return render_template('new_pitch.html', title=title, pitch_form=form)
+
+@main.route('/user/comment', methods =["GET", "POST"])
+@login_required
+def comment(id):
+    form = CommentsForm()
+    comments = Comments.query.filter_by(pitch_id = id).all()
+    pitch = Pitches.query.filter_by(id = id).first()
+
+    if form.validate_on_submit():
+        comment_submitted = form.comment.data
+        new_comment = Comments(comment= comment_submitted, commenter = current_user, comments = pitch )
+        new_comment.save_comment()
+
+    return render_template('comments.html', comment_form = form, comments = comments, pitch = pitch)  
+
+# @main.route('/category/<int:id>')  
+# def category(id) :
+#     pitches = Pitches.query.filter_by(category_id = id).all()
+
+#     return render_template('category.html', categories = pitches)    
