@@ -29,7 +29,7 @@ def index():
 @main.route('/user/<uname>')
 def profile(uname):
     user = User.query.filter_by(username=uname).first()
-    pitches = Pitches.get_pitch(user.id)
+    pitches = Pitches.get_pitches(user.id)
 
     if user is None:
         abort(404)
