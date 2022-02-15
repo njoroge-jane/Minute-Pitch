@@ -16,7 +16,7 @@
 </div>
 <div class="card-footer">
 <p class="fw-bolder">{{current_user.username}} posted on {{pitch.posted.strftime('%Y-%m-%d')}} </p>
-<a href="">add a comment</a>
+<a href="{{url_for('main.comment',id=pitch.id)}}">add a comment</a>
 </div>
 </div>
 </div>

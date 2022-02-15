@@ -1,7 +1,7 @@
 from unicodedata import category
 from flask import render_template, request, redirect, url_for, abort,jsonify
 from . import main
-from ..models import User
+from ..models import Category, User
 from app.auth.forms import UpdateProfile
 from .. import db, photos
 from flask_login import login_required, current_user
@@ -79,8 +79,9 @@ def new_pitch():
         pitch_title = form.title.data
         category = form.category.data
         pitch = form.pitch.data
+        pitch_category=Category.query.filter_by(id=category).first()
         new_pitch = Pitches(title=pitch_title,
-                            category=category, pitch=pitch, user=current_user)
+                            category=category, pitch=pitch, user=current_user,categories=pitch_category)
         new_pitch.save_pitch()
         return redirect(url_for('.profile', uname=user.username))
 
@@ -96,13 +97,13 @@ def comment(id):
 
     if form.validate_on_submit():
         comment_submitted = form.comment.data
-        new_comment = Comments(comment= comment_submitted, comment_user = current_user, comment_pitch = pitch )
+        new_comment = Comments(comment= comment_submitted, commenter = pitch )
         new_comment.save_comment()
 
     return render_template('comments.html', comment_form = form, comments = comments, pitch = pitch)  
 
-# @main.route('/category/<int:id>')  
-# def category(id) :
-#     pitches = Pitches.query.filter_by(category_id = id).all()
+@main.route('/category/<int:id>')  
+def category(id) :
+    pitches = Pitches.query.filter_by(category_id = id).all()
 
-#     return render_template('category.html', categories = pitches)    
+    return render_template('category.html', categories = pitches)    
