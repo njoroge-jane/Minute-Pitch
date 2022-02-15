@@ -2,13 +2,14 @@
 
 ## DESCRIPTION
 
-An application which allows users to use one minute wisely. 
+An application which allows users to use one minute wisely.
 The users will submit their pitches in one minute and other users will vote on them and leave comments to give their feedback on them.
-
 
 ### SETUP INSTRUCTIONS
 
 Clone the repository to your local device adding using the link [minute-pitches](git@github.com:njoroge-jane/Minute-Pitch.git)
+
+[Live link](https://minutepitchespro.herokuapp.com/)
 
 ### DEPENDANCIES
 
